@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { TrackingForm } from './components/TrackingForm';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { TrackingResults } from './components/TrackingResults';
+import { DarkModeToggle } from './components/DarkModeToggle';
 import { trackingApi } from './services/trackingApi';
 import { useTrackingPoll } from './hooks/useTrackingPoll';
+import { useDarkMode } from './hooks/useDarkMode';
 import { TrackingJobStatus } from './types/tracking.types';
 
 type AppScreen = 'form' | 'loading' | 'results' | 'error';
@@ -13,6 +15,7 @@ function App() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { isDark, toggle: toggleDarkMode } = useDarkMode();
 
   const { data: trackingData, error: pollError } = useTrackingPoll(jobId);
 
@@ -57,8 +60,9 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-200">
+      <DarkModeToggle isDark={isDark} onToggle={toggleDarkMode} />
+      <div className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-200">
         <div className="p-8 sm:p-10 md:p-12">
           {screen === 'form' && (
             <TrackingForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
@@ -76,9 +80,9 @@ function App() {
           {screen === 'error' && (
             <div className="text-center animate-fade-in py-8">
               <div className="mb-8">
-                <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mb-6 shadow-lg">
+                <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 rounded-full flex items-center justify-center mb-6 shadow-lg">
                   <svg
-                    className="w-10 h-10 text-red-600"
+                    className="w-10 h-10 text-red-600 dark:text-red-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -91,16 +95,16 @@ function App() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                   Something Went Wrong
                 </h2>
-                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-6 max-w-md mx-auto">
-                  <p className="text-red-800 text-sm font-medium">{errorMessage}</p>
+                <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700 rounded-lg p-4 mb-6 max-w-md mx-auto">
+                  <p className="text-red-800 dark:text-red-300 text-sm font-medium">{errorMessage}</p>
                 </div>
               </div>
               <button
                 onClick={handleTrackAnother}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-8 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-8 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
               >
                 <span className="flex items-center justify-center">
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

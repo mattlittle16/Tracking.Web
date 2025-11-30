@@ -132,21 +132,5 @@ src/
 - Form validation with error states
 - Mobile-first responsive design
 
-## Future Enhancements
-
-- Add more carriers (USPS, DHL, Amazon)
-- Tracking history with localStorage
-- Multiple tracking numbers at once
-- Dark mode support
-- Export tracking data to PDF
-- Email/SMS notifications
-- Map view of package location
-- WebSocket support for real-time updates
-
 ## License
-
 MIT
-
-## Documentation
-
-See `docs/PROJECT_PLAN.md` for detailed project planning and architecture decisions.
