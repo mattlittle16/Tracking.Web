@@ -34,14 +34,35 @@ A React single-page application for tracking packages. Users can enter a trackin
 npm install
 ```
 
-### 2. Start Backend API
+### 2. Configure Environment Variables
+
+Copy the example environment file and update with your API settings:
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your API configuration:
+
+```env
+VITE_API_BASE_URL=http://localhost:5084
+VITE_API_KEY=your-api-key-here
+```
+
+**Environment Files:**
+- `.env.development` - Used during `npm run dev` (default: localhost)
+- `.env.production` - Used during `npm run build` (update for production API)
+- `.env.local` - Local overrides (git-ignored, highest priority)
+- `.env.example` - Template file (commit to git)
+
+### 3. Start Backend API
 
 Ensure your tracking API backend is running on http://localhost:5084/. The API should expose:
 - `GET /HealthCheck` - Health check endpoint
 - `POST /Tracking` - Submit tracking request
 - `GET /Tracking/{jobId}` - Get tracking status
 
-### 3. Run Development Server
+### 4. Run Development Server
 
 ```bash
 npm run dev
@@ -49,7 +70,7 @@ npm run dev
 
 The application will be available at http://localhost:5173/
 
-### 4. Build for Production
+### 5. Build for Production
 
 ```bash
 npm run build
@@ -57,7 +78,7 @@ npm run build
 
 The built files will be in the `dist/` directory.
 
-### 5. Preview Production Build
+### 6. Preview Production Build
 
 ```bash
 npm run preview
@@ -81,14 +102,19 @@ npm run preview
 
 ## API Configuration
 
-API settings can be modified in `src/utils/constants.ts`:
+API settings are configured via environment variables. Create a `.env.local` file or update the appropriate environment file:
 
+**Environment Variables:**
+- `VITE_API_BASE_URL` - Base URL for the tracking API (e.g., http://localhost:5084)
+- `VITE_API_KEY` - API key for authentication
+
+**Polling Configuration** (in `src/utils/constants.ts`):
 ```typescript
-export const API_BASE_URL = 'http://localhost:5084';
-export const API_KEY = 'test';
 export const POLL_INTERVAL_MS = 2500; // 2.5 seconds
 export const MAX_POLL_ATTEMPTS = 120; // 5 minutes max
 ```
+
+**Note**: All environment variables must be prefixed with `VITE_` to be exposed to the client-side code.
 
 ## Project Structure
 
