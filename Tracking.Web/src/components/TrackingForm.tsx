@@ -10,7 +10,7 @@ interface TrackingFormProps {
 
 export function TrackingForm({ onSubmit, isSubmitting }: TrackingFormProps) {
   const [trackingNumber, setTrackingNumber] = useState('');
-  const [carrier, setCarrier] = useState('');
+  const [carrier, setCarrier] = useState('UPS');
   const [errors, setErrors] = useState<{ trackingNumber?: string; carrier?: string }>(
     {}
   );
