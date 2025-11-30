@@ -1,73 +1,152 @@
-# React + TypeScript + Vite
+# Tracking Number SPA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React single-page application for tracking packages. Users can enter a tracking number and select a carrier (UPS or FedEx) to track their shipments in real-time.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📦 Track packages from multiple carriers (UPS, FedEx)
+- 🔄 Real-time tracking with long polling
+- 📱 Fully responsive design
+- 🎨 Beautiful UI with Tailwind CSS
+- ⚡ Fast and type-safe with TypeScript
+- 🔍 Form validation with helpful error messages
+- 📊 Detailed tracking timeline with event history
+- 🎯 Color-coded delivery status badges
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 19.2.0 + TypeScript
+- **Build Tool**: Vite 7.2.4
+- **Styling**: Tailwind CSS 4.1.17
+- **HTTP Client**: Axios 1.13.2
+- **State Management**: React hooks
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js (v18 or higher recommended)
+- Backend API running on http://localhost:5084/
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. Install Dependencies
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Start Backend API
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Ensure your tracking API backend is running on http://localhost:5084/. The API should expose:
+- `GET /HealthCheck` - Health check endpoint
+- `POST /Tracking` - Submit tracking request
+- `GET /Tracking/{jobId}` - Get tracking status
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 3. Run Development Server
+
+```bash
+npm run dev
 ```
+
+The application will be available at http://localhost:5173/
+
+### 4. Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist/` directory.
+
+### 5. Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production (TypeScript compile + Vite build)
+- `npm run lint` - Run ESLint
+- `npm run preview` - Preview production build locally
+
+## Application Flow
+
+1. **Form Screen**: User enters tracking number and selects carrier
+2. **Submit**: Form validates and submits to API (POST /Tracking)
+3. **Loading Screen**: App receives jobId and begins polling
+4. **Polling**: App polls GET /Tracking/{jobId} every 2.5 seconds
+5. **Results Screen**: When job completes, displays tracking information with event timeline
+6. **Error Screen**: Handles failures gracefully with retry option
+
+## API Configuration
+
+API settings can be modified in `src/utils/constants.ts`:
+
+```typescript
+export const API_BASE_URL = 'http://localhost:5084';
+export const API_KEY = 'test';
+export const POLL_INTERVAL_MS = 2500; // 2.5 seconds
+export const MAX_POLL_ATTEMPTS = 120; // 5 minutes max
+```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── TrackingForm.tsx       # Main form component
+│   ├── TrackingInput.tsx      # Input field for tracking number
+│   ├── CarrierSelect.tsx      # Dropdown for carrier selection
+│   ├── TrackingButton.tsx     # Submit button
+│   ├── LoadingSpinner.tsx     # Loading animation
+│   └── TrackingResults.tsx    # Results display with timeline
+├── services/
+│   └── trackingApi.ts         # Axios API client
+├── types/
+│   └── tracking.types.ts      # TypeScript type definitions
+├── hooks/
+│   └── useTrackingPoll.ts     # Custom hook for polling
+├── utils/
+│   └── constants.ts           # Configuration constants
+├── App.tsx                     # Main application component
+├── main.tsx                    # Application entry point
+└── index.css                   # Tailwind CSS imports
+```
+
+## Status Badge Colors
+
+- 🟢 **Delivered**: Green
+- 🟠 **Out For Delivery**: Orange
+- 🔵 **In Transit**: Blue
+- 🔴 **Exception**: Red
+- ⚪ **Info Received**: Gray
+
+## Development Notes
+
+- Uses React 19's latest features
+- TypeScript strict mode enabled
+- Tailwind CSS v4 with PostCSS
+- Long polling pattern for real-time updates
+- Automatic cleanup of intervals on unmount
+- Form validation with error states
+- Mobile-first responsive design
+
+## Future Enhancements
+
+- Add more carriers (USPS, DHL, Amazon)
+- Tracking history with localStorage
+- Multiple tracking numbers at once
+- Dark mode support
+- Export tracking data to PDF
+- Email/SMS notifications
+- Map view of package location
+- WebSocket support for real-time updates
+
+## License
+
+MIT
+
+## Documentation
+
+See `docs/PROJECT_PLAN.md` for detailed project planning and architecture decisions.
