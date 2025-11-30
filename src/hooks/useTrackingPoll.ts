@@ -20,10 +20,10 @@ export function useTrackingPoll(jobId: string | null): UseTrackingPollResult {
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!jobId) return;
+    if (!jobId) {
+      return;
+    }
 
-    setIsPolling(true);
-    setError(null);
     pollCountRef.current = 0;
 
     const poll = async () => {
@@ -61,8 +61,14 @@ export function useTrackingPoll(jobId: string | null): UseTrackingPollResult {
       }
     };
 
-    poll();
-    intervalRef.current = window.setInterval(poll, POLL_INTERVAL_MS);
+    const startPolling = async () => {
+      setIsPolling(true);
+      setError(null);
+      await poll();
+      intervalRef.current = window.setInterval(poll, POLL_INTERVAL_MS);
+    };
+
+    startPolling();
 
     return () => {
       if (intervalRef.current) {
