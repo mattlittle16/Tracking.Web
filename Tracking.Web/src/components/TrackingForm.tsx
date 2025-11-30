@@ -37,21 +37,36 @@ export function TrackingForm({ onSubmit, isSubmitting }: TrackingFormProps) {
   };
 
   return (
-    <div className="w-full">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-        Track Your Package
-      </h1>
-      <TrackingInput
-        value={trackingNumber}
-        onChange={setTrackingNumber}
-        error={errors.trackingNumber}
-      />
-      <CarrierSelect value={carrier} onChange={setCarrier} error={errors.carrier} />
-      <TrackingButton
-        onClick={handleSubmit}
-        disabled={isSubmitting}
-        loading={isSubmitting}
-      />
+    <div className="w-full animate-fade-in">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-lg">
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Track Your Package
+        </h1>
+        <p className="text-gray-600">
+          Enter your tracking number and select a carrier to get started
+        </p>
+      </div>
+      
+      <div className="space-y-1">
+        <TrackingInput
+          value={trackingNumber}
+          onChange={setTrackingNumber}
+          error={errors.trackingNumber}
+        />
+        <CarrierSelect value={carrier} onChange={setCarrier} error={errors.carrier} />
+        <div className="pt-2">
+          <TrackingButton
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            loading={isSubmitting}
+          />
+        </div>
+      </div>
     </div>
   );
 }
