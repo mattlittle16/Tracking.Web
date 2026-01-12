@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Build arguments for environment variables
 ARG VITE_API_KEY
-ARG VITE_WEATHER_API_KEY
+ARG VITE_API_BASE_URL
 
 # Set as environment variables for Vite
 ENV VITE_API_KEY=$VITE_API_KEY
