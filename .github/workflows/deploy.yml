@@ -1,0 +1,49 @@
+name: Deploy Tracking Web to Homelab
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        env:
+          API_KEY: ${{ secrets.VITE_API_KEY }}
+          BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        run: |
+          docker build \
+            --build-arg VITE_API_KEY=$API_KEY \
+            --build-arg VITE_API_BASE_URL=$BASE_URL \
+            -t trackingweb:latest \
+            -t trackingweb:${{ github.sha }} \
+            .
+
+      - name: Stop and remove old container
+        run: |
+          docker stop trackingweb || true
+          docker rm trackingweb || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name trackingweb \
+            --restart unless-stopped \
+            --network app-network \
+            trackingweb:latest
+
+      - name: Clean up old images
+        run: |
+          docker image prune -f
+
+      - name: Verify deployment
+        run: |
+          sleep 5
+          docker ps | grep trackingweb
+          echo "Deployment successful! Container is running."
